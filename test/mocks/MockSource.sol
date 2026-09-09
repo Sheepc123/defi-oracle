@@ -23,7 +23,6 @@ import {IPriceOracle} from "../../src/interfaces/IPriceOracle.sol";
 ///      「中位数不受单个离群值影响」是数学恒等式，不是实验发现。
 ///      主实验请用多个真实的 SimpleDEX 实例，见 README.md「给 C：多个 DEX 实例」一节。
 
-
 contract MockSource is IPriceOracle {
     /// @notice 当前报价，单位与 IPriceOracle 一致：mUSD/ETH，18 位定点
     uint256 public price;

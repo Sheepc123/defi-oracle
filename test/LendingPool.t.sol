@@ -16,7 +16,6 @@ import {MockSource} from "./mocks/MockSource.sol";
 ///         把「报价变化」和「报价怎么被操纵出来」两件事解耦，
 ///         这样 LendingPool 出问题时能立刻定位，不会和 AMM 的数学纠缠在一起。
 
-
 contract LendingPoolTest is Test {
     MiniUSD internal token;
     MockSource internal oracle;

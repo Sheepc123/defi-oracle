@@ -57,18 +57,13 @@ abstract contract OracleScenario is Test {
     ///      否则聚合版凭空多出几倍流动性，「聚合更稳健」里就混进了
     ///      「钱更多所以更难操纵」，结论不成立。
 
-
     uint256 internal constant TOTAL_ETH_DEPTH = 100 ether;
-
 
     /// @notice 全系统 mUSD 深度预算。与上面配对，保证初始价 = 2000。
     uint256 internal constant TOTAL_TOKEN_DEPTH = 200_000e18;
 
-
-
     /// @notice 参考市场价：1 ETH = 2000 mUSD。所有偏离度都相对它计算。
     uint256 internal constant REFERENCE_PRICE = 2000e18;
-
 
     /// @notice 借贷池的可借资金
     uint256 internal constant POOL_FUNDING = 200_000e18;
@@ -88,7 +83,7 @@ abstract contract OracleScenario is Test {
     /// @notice 标准攻击规模档位（mUSD）。A/B/C 统一扫这四档，便于横向对齐。
     /// @dev 首元素必须显式转 uint256，否则 Solidity 会按最小容纳类型推断
     ///      整个数组的类型（uint80[4]），无法隐式转成 uint256[4]。
-    
+
     function attackSizes() internal pure returns (uint256[4] memory) {
         return [uint256(50_000e18), 100_000e18, 200_000e18, 400_000e18];
     }
@@ -288,7 +283,6 @@ abstract contract OracleScenario is Test {
     ///      （见 OracleScenario.t.sol 的 testSnapshotRestoresTimestamp）。
     ///      但如果你的 TWAP 实验依赖精确的时间轴，更稳妥的做法是每档单独写一个
     ///      test 函数 —— 每个 test 都从干净的 setUp() 开始，不存在任何残留。
-
 
     function sweep() internal returns (Result[4] memory results) {
         uint256[4] memory sizes = attackSizes();

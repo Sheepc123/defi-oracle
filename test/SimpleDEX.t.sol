@@ -9,7 +9,6 @@ contract SimpleDEXTest is Test {
     MiniUSD token;
     SimpleDEX dex;
 
-
     address alice;
     // Alice 用于购买 ETH 的 mUSD 数量
     uint256 constant ALICE_TOKEN_AMOUNT = 20_000e18;
@@ -17,47 +16,25 @@ contract SimpleDEXTest is Test {
     function setUp() public {
         token = new MiniUSD();
 
-        dex = new SimpleDEX(
-            address(token)
-        );
+        dex = new SimpleDEX(address(token));
 
-        vm.deal(
-            address(this),
-            200 ether
-        );
+        vm.deal(address(this), 200 ether);
 
-        token.approve(
-            address(dex),
-            200_000e18
-        );
+        token.approve(address(dex), 200_000e18);
 
-        dex.initializeLiquidity{
-            value: 100 ether
-        }(
-            200_000e18
-        );
+        dex.initializeLiquidity{value: 100 ether}(200_000e18);
 
         alice = makeAddr("alice");
 
-        bool success = token.transfer(
-            alice,
-            ALICE_TOKEN_AMOUNT
-        );
+        bool success = token.transfer(alice, ALICE_TOKEN_AMOUNT);
 
         assertTrue(success);
     }
 
-    function testInitialSpotPrice()
-        public
-        view
-    {
-        uint256 price =
-            dex.getSpotPrice();
+    function testInitialSpotPrice() public view {
+        uint256 price = dex.getSpotPrice();
 
-        assertEq(
-            price,
-            2000e18
-        );
+        assertEq(price, 2000e18);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -85,7 +62,7 @@ contract SimpleDEXTest is Test {
     /// @notice 买入再立刻卖回必须亏钱。
     ///         零手续费的恒定乘积池是精确可逆的，往返只损失几 wei，
     ///         那样价格操纵就是免费的，整个实验的「操纵成本」一列会全是 0。
-    
+
     function testFeeIsCharged() public {
         uint256 ethOut = _aliceDumpsToken();
 
@@ -176,11 +153,7 @@ contract SimpleDEXTest is Test {
 
         (uint256 cumAfter,) = dex.currentCumulativePrice();
 
-        assertEq(
-            cumAfter,
-            cumBefore + manipulatedPrice * 600,
-            "held manipulation must enter the accumulator"
-        );
+        assertEq(cumAfter, cumBefore + manipulatedPrice * 600, "held manipulation must enter the accumulator");
 
         console2.log("manipulated price (/ETH):", manipulatedPrice / 1e18);
     }

@@ -12,7 +12,6 @@ import {IPriceOracle} from "../../src/interfaces/IPriceOracle.sol";
 ///      （建议把 label 做成构造参数，方便 C 复用为聚合器的单源包装器）。
 ///      这里刻意写得最简，是为了让自测只暴露骨架自身的问题。
 
-
 contract HarnessSpotOracle is IPriceOracle {
     SimpleDEX public immutable dex;
 
@@ -28,7 +27,6 @@ contract HarnessSpotOracle is IPriceOracle {
         return "harness-spot (self-test only)";
     }
 }
-
 
 /// @title OracleScenario 自测
 ///
@@ -50,10 +48,8 @@ contract HarnessSpotOracle is IPriceOracle {
 ///         就能拿到数千 mUSD 的净利。A 的实验会给出完整曲线，这里只是确认
 ///         骨架能把这个信号测出来。
 
-
 contract OracleScenarioSelfTest is OracleScenario {
     SimpleDEX internal dex;
-
 
     /// @dev 攻击者当前持有的、来自操纵所得的 ETH。
     ///      单池场景一个变量就够；多池场景（C）需要按池分别记录。
@@ -62,8 +58,6 @@ contract OracleScenarioSelfTest is OracleScenario {
     // ─────────────────────────────────────────────────────────
     // 三个 hook 的最小实现
     // ─────────────────────────────────────────────────────────
-
-
 
     function _deployOracle() internal override returns (IPriceOracle) {
         dex = new SimpleDEX(address(token));
@@ -75,11 +69,7 @@ contract OracleScenarioSelfTest is OracleScenario {
         return new HarnessSpotOracle(address(dex));
     }
 
-    function _manipulate(uint256 tokenBudget)
-        internal
-        override
-        returns (uint256 tokenSpent, uint256 ethGained)
-    {
+    function _manipulate(uint256 tokenBudget) internal override returns (uint256 tokenSpent, uint256 ethGained) {
         // 处于 vm.startPrank(attacker) 上下文，所以这两个调用都是攻击者发出的
 
         token.approve(address(dex), tokenBudget);
