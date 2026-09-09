@@ -7,57 +7,70 @@
 
 ---
 
-## 环境配置 
-1. Solidity
+## 环境配置
 
-智能合约主要开发语言：Solidity
+### 1. Solidity
 
-版本：^0.8.24
+智能合约使用 Solidity 编写，源码版本约束为 `^0.8.24`。Solidity 编译器由 Foundry
+根据项目配置自动下载，无需单独安装。
 
-2. Foundry
+### 2. Foundry
 
-安装：
+安装 Foundry：
 
+```bash
 curl -L https://getfoundry.sh/install | bash
+foundryup
+```
 
-3. Solidity 依赖
+安装完成后检查：
 
-OpenZeppelin Contracts
+```bash
+forge --version
+```
 
-OpenZeppelin 用于提供标准化、成熟的智能合约组件。
+本项目验证环境为 `forge 1.8.1` / `solc 0.8.36`。
 
-本项目主要使用：
+### 3. Solidity 依赖
 
-ERC-20 Token
+本项目使用以下依赖：
 
-安装：
+- `forge-std`：Foundry 测试工具库
+- `openzeppelin-contracts`：提供标准 ERC-20 实现
 
-forge install OpenZeppelin/openzeppelin-contracts
-
-推荐创建：
-
-remappings.txt
-
-并加入：
-
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
-
+依赖已经通过 Git submodule 配置，并由 `.gitmodules` 和 `foundry.lock` 记录版本；
+Solidity 导入路径也已经写入 `remappings.txt`。因此，克隆项目后不需要再次执行
+`forge install`，也不需要手动创建 `remappings.txt`。
 
 ## 快速开始
 
+推荐在克隆时一并下载 submodule：
+
 ```bash
-cd mini-defi                                  # 必须在这一层，上一层没有 src/
-git submodule update --init --recursive       # 首次克隆
-
-
-# 
-forge build
-forge test -vv      #用于测试代码是否正确
-
-forge test --match-test testSweepAllSizes -vv # 看攻击数据
+git clone --recurse-submodules <REPOSITORY_URL>
+cd mini-defi
 ```
 
-环境：`forge 1.8.1` / `solc 0.8.36`。
+如果已经使用普通方式克隆，则补充下载依赖：
+
+```bash
+git submodule update --init --recursive
+```
+
+编译并运行全部测试：
+
+```bash
+forge build
+forge test -vv
+```
+
+只运行四档本地模拟攻击并查看结果：
+
+```bash
+forge test --match-test testSweepAllSizes -vv
+```
+
+所有攻击实验均在 Foundry 创建的本地模拟 EVM 中运行，不会连接或攻击真实链、账户或计算机。
 
 ---
 
