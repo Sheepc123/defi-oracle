@@ -61,16 +61,14 @@ git submodule update --init --recursive
 
 ```bash
 forge build
-forge test -vv
+forge test -vv                                #用于测试代码是否正确 
 ```
 
 只运行四档本地模拟攻击并查看结果：
 
 ```bash
-forge test --match-test testSweepAllSizes -vv
+forge test --match-test testSweepAllSizes -vv         #模拟攻击 
 ```
-
-所有攻击实验均在 Foundry 创建的本地模拟 EVM 中运行，不会连接或攻击真实链、账户或计算机。
 
 ---
 
@@ -358,11 +356,6 @@ OracleScenarioSelfTest   5 passed
 802 mUSD 的手续费换 10 万 mUSD 净利 —— Spot Oracle 在这套参数下是灾难性的。
 手续费成本随规模亚线性增长（滑点主要由池深决定），超额借款近似线性，所以差距越拉越大。
 
-### 待办
-
-- **git 仓库零 commit**，`master` 是空分支。四人并行前必须先打基线提交
-- **`docs/` 被 `.gitignore` 忽略**，`DESIGN.md` 提交不上去，别人拉不到
-- **`forge fmt --check` 会红**（CI 里有这一步），需全量跑一次 `forge fmt` 或调整 CI
 
 ### 编译警告
 
@@ -372,16 +365,7 @@ OracleScenarioSelfTest   5 passed
 以及测试文件里的 `calls-loop` / `unused-return` / `unsafe-typecast`。
 
 
-#####
-
-先建立心智模型:代码分三层
-
-第 1 层  src/          被攻击的「系统」——代币、交易所、借贷池
-第 2 层  test/base/OracleScenario.sol    攻击「剧本」——谁在什么时候做什么
-第 3 层  test/base/OracleScenario.t.sol  一次具体的「演出」——用哪个 Oracle、怎么下手
-关键理解:攻击流程是写死在第 2 层的,三个人做三种 Oracle,但都跑同一套剧本。这样得出的数字才能横向比。第 3 层每个人写自己的,只填「具体怎么操纵」这一小块。
-
-二、先跑起来
+### 运行结果
  
 forge test --match-test testHarnessRunsEndToEnd -vv
 -vv 是关键——不加它看不到任何 console2.log 输出,只会显示 PASS。输出:
@@ -424,7 +408,9 @@ OracleScenario.t.sol:92 _unwind() — 攻击者把 ETH 换回来,价格掉回去
 
 
 tokenReturned = dex.swapETHForToken{value: heldETH}();
+
 四、结果在哪里
+
 结果有两种形态:
 
 ① 结构体 Result — OracleScenario.sol:194。这是给代码用的,11 个字段,全精度。你在测试里这样拿:
@@ -474,6 +460,7 @@ contract MyOracle is IPriceOracle {
     function getPrice() external view returns (uint256) { ... }
     function description() external view returns (string memory) { ... }
 }
+
 2. 在 test/ 下写测试,继承骨架,填三个 hook。直接抄 OracleScenario.t.sol:54-95 那一段,把 HarnessSpotOracle 换成你的。
 
 3. 写你自己的 test 函数:
